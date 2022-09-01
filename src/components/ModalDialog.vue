@@ -2,20 +2,20 @@
   <div class="modal">
     <section class="modal-content">
       <div class="container">
-        <h1>Delete note</h1>
-        <p>Are you sure you want to delete this note?</p>
+        <h1>{{ title }}</h1>
+        <p>{{ subtitle }}</p>
         <div class="clearfix">
           <button
             class="cancelbtn"
             @click="$emit('cancel')"
           >
-            Cancel
+            {{ cancelText }}
           </button>
           <button
-            class="confirmbtn"
+            class="confirmbtn is-danger"
             @click="$emit('confirm')"
           >
-            Delete
+            {{ confirmText }}
           </button>
         </div>
       </div>
@@ -24,7 +24,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+     title: { type: String, default() {} },
+     subtitle: { type: String, default() {} },
+     cancelText: { type: String, default() {return "Cancel"} },
+     confirmText: { type: String, default() {return "Confirm"} }
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -48,28 +55,7 @@ export default {};
 }
 
 button {
-  padding: 1rem 1rem;
-  margin: 1rem 0;
-  border: none;
-  float: left;
-  width: 50%;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 1;
-  }
-  &.cancelbtn {
-    background-color: #ccc;
-    &:hover {
-      background-color: rgb(173, 173, 173);
-    }
-  }
-  &.confirmbtn {
-    background-color: rgb(231, 54, 54);
-    &:hover {
-      background-color: rgb(189, 39, 39);
-    }
-  }
+  width: 30%;
 }
 
 .container {

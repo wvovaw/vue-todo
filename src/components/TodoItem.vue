@@ -1,28 +1,42 @@
 <template>
   <div class="item">
-    <input type="checkbox" :checked="todo.done" disabled />
-    <label>
-      {{ todo.task }}
-    </label>
+    <input
+      type="checkbox"
+      :checked="done"
+      @input="$emit('update:done', $event.target.checked)"
+    >
+    <input
+      type="text"
+      :value="task"
+      @input="$emit('update:task', $event.target.value)"
+    >
+    <button
+      class="is-danger"
+      @click="removeTodo"
+    >
+      Del
+    </button>
   </div>
 </template>
 
 <script>
 export default {
   name: "TodoItem",
-  props: { todo: { type: Object, default() {} } },
+  props: { task: { type: String, default() {return "";} },
+           done: { type: Boolean, default() {return false;}}
+  },
+  emits: ['update:done', 'update:task'],
+  data() {
+    return{
+    }
+  },
+  methods: {
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-label {
-  border-bottom: 1px solid black;
-}
-.item {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin: 1rem 0;
-  max-width: 20rem;
+input[type="text"] {
+  width: 50%;
 }
 </style>

@@ -7,9 +7,12 @@
       @deleteNote="(noteId) => openDialog(noteId)"
     />
     <ModalDialog
+      title="Delete note?"
+      subtitle="Are you sure you want to delete this note?"
+      confirm-text="Delete"
+      cancel-text="Cancel"
       @cancel="showModal = false"
       @confirm="deleteNote"
-      @deleteNoteDialog="deleteNote"
       v-show="showModal"
     />
   </div>

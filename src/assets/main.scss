@@ -1,0 +1,61 @@
+$success: #47b347;
+$warning: #ecec6f;
+$danger: #da4343;
+$info: #6969f7;
+$gray: #a0a0a0;
+
+$b-rad: 5px;
+
+a,
+a:visited {
+  text-decoration: none;
+  color: black;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+input[type="text"] {
+  border: 1px solid black !important;
+  border-radius: $b-rad;
+  height: 3rem;
+  padding: 0 1rem;
+  font-size: medium;
+
+  &:focus {
+    filter: brightness(95%);
+  }
+}
+
+button {
+  border: 1px solid black !important;
+  border-radius: $b-rad;
+  border: none;
+  padding: 1rem 1.5rem;
+  margin: 0 0.3rem;
+
+  &:hover {
+    filter: brightness(85%);
+    cursor: pointer;
+  }
+}
+
+.is-success {
+  background-color: $success  !important;
+}
+
+.is-warning {
+  background-color: $warning  !important;
+}
+
+.is-danger {
+  background-color: $danger  !important;
+}
+
+.is-info {
+  background-color: $info  !important;
+}
+
+.is-regular {
+  background-color: $gray;
+}
