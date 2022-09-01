@@ -1,9 +1,8 @@
 <template>
   <div class="item">
-    <input type="checkbox" checked disabled>
+    <input type="checkbox" :checked="todo.done" disabled />
     <label>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius dolorum
-      minima numquam maxime vitae ducimus ratione esse, explicabo repellat qui
+      {{ todo.task }}
     </label>
   </div>
 </template>
@@ -11,7 +10,7 @@
 <script>
 export default {
   name: "TodoItem",
-  props: {},
+  props: { todo: { type: Object, default() {} } },
 };
 </script>
 

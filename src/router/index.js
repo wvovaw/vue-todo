@@ -8,9 +8,14 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/edit',
+    path: '/edit/:id',
     name: 'edit',
-    component: () => import(/* webpackChunkName: "edit" */ '../views/EditView.vue')
+    component: () => import(/* webpackChunkName: "edit" */ '../views/EditView.vue'),
+  },
+  {
+    // If user will try to go to the route that not exist
+    path: '/:catchAll(.*)*',
+    redirect: '/'
   }
 ];
 
