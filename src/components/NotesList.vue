@@ -6,6 +6,9 @@
       :note="note"
       @deleteNote="(noteId) => openDialog(noteId)"
     />
+    <h1 v-show="notes.length < 1">
+      Notes list is empty. Create new one!
+    </h1>
     <ModalDialog
       title="Delete note?"
       subtitle="Are you sure you want to delete this note?"
