@@ -15,7 +15,8 @@
                 confirmBtnClass: 'is-success',
               },
               saveChanges
-            )"
+            )
+          "
         >
           Save changes
         </button>
@@ -29,7 +30,8 @@
                   'Are you sure you want to revert all changes? It will restore the initial state.',
               },
               revertChanges
-            )"
+            )
+          "
         >
           Revert changes
         </button>
@@ -42,7 +44,8 @@
                 subtitle: 'Warning! Unsaved changes will not be saved!',
               },
               exit
-            )"
+            )
+          "
         >
           exit
         </button>
@@ -55,7 +58,8 @@
                 subtitle: 'Are you sure you want to delete the note?',
               },
               deleteNote
-            )"
+            )
+          "
         >
           Delete note
         </button>
@@ -137,6 +141,7 @@ export default {
       isNewNote: false,
       newNote: {},
       backupNote: {},
+      noteChangeHistory: [],
       modal: {
         show: false,
         title: "",
@@ -181,8 +186,7 @@ export default {
       if (this.$route.params.id == "new") {
         this.$store.dispatch("addNote", this.newNote);
         this.$router.push(`/edit/${this.newNote.id}`);
-      }
-      else this.$store.dispatch("editNote", this.newNote);
+      } else this.$store.dispatch("editNote", this.newNote);
     },
     revertChanges() {
       this.newNote = JSON.parse(this.backupNote);
@@ -196,27 +200,19 @@ export default {
       this.newNote.todo.splice(ix, 1);
     },
   },
-  computed: {
-    note() {
-      // If query is "/edit/new"
-      if (this.$route.params.id == "new")
-        return { title: "New note", todo: [] };
-
-      // If query has an id that there is the note with the same id "/edit/:id"
-      if (this.$store.state.notes[this.$route.params.id] != undefined)
-        return this.$store.state.notes[this.$route.params.id];
-
-      // Otherwise the query was incorrect so return empty object.
-      return {};
-    },
-  },
   beforeCreate() {
-    if (this.$route.params.id != "new") // "/edit/new" route is used for creating new note
-      if (this.$store.state.notes[this.$route.params.id] == undefined) // Redirect to "/" if there is no a note with that id
-        this.$router.push("/");
+    const id = this.$route.params.id;
+    if (id != "new")
+      if (this.$store.getters.noteById(id) == undefined) // "/edit/new" route is used for creating new note
+        this.$router.push("/"); // Redirect to "/" if there is no a note with that id
   },
   beforeMount() {
-    this.newNote = JSON.parse(JSON.stringify(this.note));
+    const id = this.$route.params.id;
+    if (id == "new")
+      this.newNote = { title: "New note", todo: [] };
+    if (this.$store.getters.noteById(id) != undefined)
+      this.newNote = this.$store.getters.noteById(id);
+
     this.backupNote = JSON.stringify(this.newNote);
   },
 };

@@ -6,6 +6,12 @@ export default createStore({
     notesIdCounter: 0,
   },
   getters: {
+    notes: state => {
+      return state.notes; 
+    },
+    noteById: state => id => {
+      return state.notes.find(note => note.id == id);
+    }
   },
   mutations: {
     LOAD_STORE: (state) => {

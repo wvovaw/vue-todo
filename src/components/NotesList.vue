@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     notes() {
-      return this.$store.state.notes;
+      return this.$store.getters.notes;
     },
   },
   methods: {
@@ -46,8 +46,7 @@ export default {
       this.showModal = true;
     },
     deleteNote() {
-      const id = this.noteIdToDelete;
-      this.$store.dispatch("removeNote", id);
+      this.$store.dispatch("removeNote", this.noteIdToDelete);
       this.showModal = false;
       this.noteIdtoDelete = null;
     }
