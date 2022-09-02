@@ -6,13 +6,12 @@
         <p>{{ subtitle }}</p>
         <div class="clearfix">
           <button
-            class="cancelbtn"
             @click="$emit('cancel')"
           >
             {{ cancelText }}
           </button>
           <button
-            class="confirmbtn is-danger"
+            :class="confirmBtnClass"
             @click="$emit('confirm')"
           >
             {{ confirmText }}
@@ -26,18 +25,21 @@
 <script>
 export default {
   props: {
-     title: { type: String, default() {} },
-     subtitle: { type: String, default() {} },
-     cancelText: { type: String, default() {return "Cancel"} },
-     confirmText: { type: String, default() {return "Confirm"} }
+     title: { type: String, default: "" },
+     subtitle: { type: String, default: "" },
+     cancelText: { type: String, default: "Cancel" },
+     confirmText: { type: String, default: "Confirm" },
+     confirmBtnClass: { type: String, default:"is-danger" },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .modal {
-  display: block;
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1;
   left: 0;
   top: 0;
@@ -45,17 +47,18 @@ export default {
   height: 100%;
   overflow: auto;
   background-color: #000000cc;
-  padding-top: 10%;
 }
 
 .modal-content {
   background-color: white;
   margin: 5% auto 15% auto;
   width: 60%;
+  text-align: center;
 }
 
 button {
-  width: 30%;
+  width: 40%;
+  padding: 1rem 5%;
 }
 
 .container {

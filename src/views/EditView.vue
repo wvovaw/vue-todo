@@ -7,25 +7,55 @@
       <template #right>
         <button
           class="is-success"
-          @click="saveChanges"
+          @click="
+            runDialog(
+              {
+                title: ' Save changes?',
+                subtitle: 'Are you sure you want to save changes?',
+                confirmBtnClass: 'is-success',
+              },
+              saveChanges
+            )"
         >
           Save changes
         </button>
         <button
           class="is-warning"
-          @click="revertChanges"
+          @click="
+            runDialog(
+              {
+                title: 'Revert changes?',
+                subtitle:
+                  'Are you sure you want to revert all changes? It will restore the initial state.',
+              },
+              revertChanges
+            )"
         >
           Revert changes
         </button>
         <button
           class="is-warning"
-          @click="exit"
+          @click="
+            runDialog(
+              {
+                title: 'Exit?',
+                subtitle: 'Warning! Unsaved changes will not be saved!',
+              },
+              exit
+            )"
         >
           exit
         </button>
         <button
           class="is-danger"
-          @click="deleteNote"
+          @click="
+            runDialog(
+              {
+                title: 'Delete note?',
+                subtitle: 'Are you sure you want to delete the note?',
+              },
+              deleteNote
+            )"
         >
           Delete note
         </button>
@@ -59,12 +89,13 @@
         </div>
       </template>
     </ControlsBar>
-    <h1 class="note-title">
+    <div class="note-title">
+      <label><strong>Note title: </strong></label>
       <input
         type="text"
         v-model="newNote.title"
       >
-    </h1>
+    </div>
     <section class="todo-list">
       <TodoItem
         class="todo-item"
@@ -74,13 +105,17 @@
         :done="newNote.todo[ix].done"
         @update:task="(newVal) => (newNote.todo[ix].task = newVal)"
         @update:done="(newVal) => (newNote.todo[ix].done = newVal)"
-        @deleteTodo="(todoId) => openDialog(deleteTodoEntry, todoId)"
+        @deleteTodo="deleteTodoEntry(ix)"
       />
+      <h1 v-show="newNote.todo.length < 1">
+        Todo list is empty. Add some tasks
+      </h1>
     </section>
     <ModalDialog
       :title="modal.title"
       :subtitle="modal.subtitle"
       :confirm-text="modal.confirmText"
+      :confirm-btn-class="modal.confirmBtnClass"
       :cancel-text="modal.cancelText"
       @cancel="onDialogCancel"
       @confirm="onDialogConfirm"
@@ -101,37 +136,65 @@ export default {
     return {
       isNewNote: false,
       newNote: {},
+      backupNote: {},
       modal: {
         show: false,
         title: "",
         subtitle: "",
-        confirmText: "Yes",
-        cancelText: "Cancel",
+        callBack: () => {},
       },
     };
   },
   methods: {
+    runDialog(params, cb) {
+      this.modal = {
+        show: true,
+        title: params.title,
+        subtitle: params.subtitle,
+        confirmBtnClass: params.confirmBtnClass,
+        callBack: cb,
+      };
+    },
+    cleanModal() {
+      this.modal = {
+        show: false,
+        title: "",
+        subtitle: "",
+        callBack: () => {},
+      };
+    },
+    onDialogConfirm() {
+      this.modal.callBack();
+      this.cleanModal();
+    },
+    onDialogCancel() {
+      this.cleanModal();
+    },
     exit() {
-      // NEED CONFIRMATION
       this.$router.push("/");
     },
     deleteNote() {
-      // NEED CONFIRMATION
+      this.$store.dispatch("removeNote", this.newNote.id);
+      this.$router.push("/");
     },
     saveChanges() {
+      if (this.$route.params.id == "new") {
+        this.$store.dispatch("addNote", this.newNote);
+        this.$router.push(`/edit/${this.newNote.id}`);
+      }
+      else this.$store.dispatch("editNote", this.newNote);
     },
     revertChanges() {
-      // NEED CONFIRMATION
+      this.newNote = JSON.parse(this.backupNote);
     },
     undoLastChange() {},
     redoLastChange() {},
     addTodoEntry() {
-      this.newNote.todo.push({task: "", done: false});
+      this.newNote.todo.push({ task: "", done: false });
     },
-    deleteTodoEntry() {},
-
-    onDialogCancel() {},
-    onDialogConfirm() {},
+    deleteTodoEntry(ix) {
+      this.newNote.todo.splice(ix, 1);
+    },
   },
   computed: {
     note() {
@@ -148,16 +211,14 @@ export default {
     },
   },
   beforeCreate() {
-    if (this.$route.params.id == "new")
-      // "/edit/new" route is used for creating new note
-      this.isNewNote = true;
-    else if (this.$store.state.notes[this.$route.params.id] == undefined)
-      // Redirect to "/" if there is no a note with that id
-      this.$router.push("/");
+    if (this.$route.params.id != "new") // "/edit/new" route is used for creating new note
+      if (this.$store.state.notes[this.$route.params.id] == undefined) // Redirect to "/" if there is no a note with that id
+        this.$router.push("/");
   },
   beforeMount() {
     this.newNote = JSON.parse(JSON.stringify(this.note));
-  }
+    this.backupNote = JSON.stringify(this.newNote);
+  },
 };
 </script>
 
@@ -178,12 +239,6 @@ export default {
 
   .todo-item {
     margin: 1rem 0;
-    &:last-child {
-      margin-bottom: 0;
-    }
-    &:first-child {
-      margin-top: 0;
-    }
   }
 }
 </style>

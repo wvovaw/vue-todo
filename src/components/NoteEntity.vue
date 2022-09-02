@@ -49,7 +49,7 @@ export default {
 .note {
   border: 2px solid black;
   padding: 1rem;
-  max-height: 15rem;
+  max-height: 25rem;
   width: 20rem;
 
   .note-header {
@@ -89,10 +89,6 @@ export default {
       max-width: 20rem;
       label {
         border-bottom: 1px solid black;
-      }
-      // TODO: beautify checkboxes
-      input[type="checkbox"][aria-disabled="true"] {
-        pointer-events: none;
       }
     }
   }

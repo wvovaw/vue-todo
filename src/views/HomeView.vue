@@ -5,7 +5,10 @@
         Notes
       </template>
       <template #right>
-        <button class="is-success" @click="createNewNote">
+        <button
+          class="is-success"
+          @click="createNewNote"
+        >
           Create new
         </button>
       </template>

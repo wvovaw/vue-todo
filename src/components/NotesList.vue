@@ -60,5 +60,6 @@ export default {
   text-align: center;
   justify-content: space-around;
   gap: 3rem;
+  padding-bottom: 1rem;
 }
 </style>

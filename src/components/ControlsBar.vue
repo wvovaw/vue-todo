@@ -36,6 +36,9 @@ nav {
   // Makes possible to imply scoped scss rulles on in-slot elements
   :deep(.nav-item) {
     align-self: center;
+    & * {
+      margin-bottom: 5px;
+    }
   }
 }
 </style>
