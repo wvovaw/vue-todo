@@ -2,65 +2,46 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    notesIdCounter: 3,
-    notes: [
-      {
-        id: 0,
-        title: "Some dumb title",
-        todo: [
-          { task: "work on an TA", done: true },
-          { task: "ride a bike", done: false },
-          { task: "sleep", done: false },
-        ]
-      },
-      {
-        id: 1,
-        title: "Empty note",
-        todo: [
-        ]
-      },
-      {
-        id: 2,
-        title: "Large note",
-        todo: [
-          { task: "very long text that won't fit in the preview", done: false },
-          { task: "><", done: true },
-          { task: "LALALALALALALLALALLALALALLALALALALAALALLALALALALA", done: false },
-          { task: "nothing", done: true },
-          { task: "work on an TA", done: false },
-          { task: "ride a bike", done: false },
-          { task: "sleep", done: false },
-        ]
-      },
-    ]
+    notes: [],
+    notesIdCounter: 0,
   },
   getters: {
   },
   mutations: {
-    _addNote: (state, note) => {
+    LOAD_STORE: (state) => {
+      if (localStorage.getItem("todo-app-state")) {
+        try {
+          Object.assign(state, JSON.parse(localStorage.getItem("todo-app-state")));
+        }
+        catch (e) {
+          console.error("ERR: Could not initialize store.", e);
+        }
+      }
+    },
+    ADD_NOTE: (state, note) => {
       note.id = state.notesIdCounter++;
       state.notes.push(note);
     },
-    _editNote: (state, note) => {
+    EDIT_NOTE: (state, note) => {
       const ix = state.notes.findIndex((n) => n.id == note.id);
       if (ix != -1) {
         state.notes[ix] = note;
       }
     },
-    _removeNote: (state, id) => {
+    REMOVE_NOTE: (state, id) => {
       if (id >= 0)
         state.notes = state.notes.filter(n => n.id !== id);
     },
   },
   actions: {
     addNote: async (context, note) => {
-      context.commit("_addNote", note);  // Performing mutation 'addNote'
+      context.commit("ADD_NOTE", note);
     },
     editNote: async (context, note) => {
-      context.commit("_editNote", note);  // Performing mutation 'editNote'
+      context.commit("EDIT_NOTE", note);
     },
     removeNote: async (context, id) => {
-        context.commit("_removeNote", id);  // Performing mutation 'removeNote'
+      context.commit("REMOVE_NOTE", id);
     },
   },
   modules: {

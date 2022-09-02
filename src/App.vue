@@ -16,3 +16,13 @@ body {
   min-height: 100%;
 }
 </style>
+
+<script>
+
+export default {
+  beforeCreate() {
+    this.$store.commit("LOAD_STORE");
+  },
+}
+</script>
+
