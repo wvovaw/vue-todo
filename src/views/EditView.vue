@@ -59,11 +59,11 @@
       </h1>
     </section>
     <ModalDialog
-      :title="modal.selected.title"
-      :subtitle="modal.selected.subtitle"
-      :confirm-text="modal.selected.confirmText"
-      :confirm-btn-class="modal.selected.confirmBtnClass"
-      :cancel-text="modal.selected.cancelText"
+      :title="modal.type.title"
+      :subtitle="modal.type.subtitle"
+      :confirm-text="modal.type.confirmText"
+      :confirm-btn-class="modal.type.confirmBtnClass"
+      :cancel-text="modal.type.cancelText"
       @cancel="onDialogCancel"
       @confirm="onDialogConfirm"
       v-show="modal.show"
@@ -85,7 +85,7 @@ export default {
       backupNote: {},
       modal: {
         show: false,
-        selected: {}, // anchor for modal.type
+        type: {}, // anchor for modal.types
         types: {
           exit: {
             title: " Do you want to exit?",
@@ -118,16 +118,16 @@ export default {
   },
   methods: {
     runDialog(type) {
-      this.modal.selected = type;
+      this.modal.type = type;
       this.modal.show = true;
     },
     onDialogConfirm() {
-      this.modal.selected.callBack();
+      this.modal.type.callBack();
       this.modal.show = false;
     },
     onDialogCancel() {
       this.modal.show = false;
-      this.modal.selected = {};
+      this.modal.type = {};
     },
     exit() {
       this.$router.push("/");
@@ -137,9 +137,11 @@ export default {
       this.$router.push("/");
     },
     saveChanges() {
-      this.$store.dispatch("pushNote", this.note);
-      if (this.$route.params.id == "new") 
-        this.$router.push(`/edit/${this.note.id}`);
+      this.$store.dispatch("pushNote", JSON.parse(JSON.stringify(this.note)));
+      if (this.$route.params.id == "new") {
+        const id = this.$store.getters.lastNote.id;
+        this.$router.push(`/edit/${id}`);
+      }
     },
     revertChanges() {
       this.note = JSON.parse(this.backupNote);
@@ -166,7 +168,7 @@ export default {
     // It can be manipulated without impact on the main storage
     // Changes may be written if user push save button
     const id = this.$route.params.id;
-    if (id == "new") this.note = { title: "New note", todo: [] };
+    if (id == "new") this.note = JSON.parse(JSON.stringify({ title: "New note", todo: [] }));
     if (this.$store.getters.noteById(id) != undefined)
         this.note = JSON.parse(JSON.stringify(this.$store.getters.noteById(id)));
     this.backupNote = JSON.stringify(this.note);

@@ -13,6 +13,10 @@ export default createStore({
       const n = state.notes.find(note => note.id == id);
       return n;
     },
+    lastNote: state => {
+      const n = state.notes.find(note => note.id == state.notesIdCounter - 1);
+      return n;
+    }
   },
   mutations: {
     // Initial mutation that load vuex state from localStorage if it exist
