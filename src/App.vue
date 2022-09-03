@@ -21,7 +21,7 @@ body {
 
 export default {
   beforeCreate() {
-    this.$store.commit("LOAD_STORE");
+    this.$store.commit("LOAD_STORE"); // Load store from localStorage before app is created
   },
 }
 </script>

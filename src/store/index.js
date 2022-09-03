@@ -2,18 +2,20 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    notes: [],
-    notesIdCounter: 0,
+    notes: [],            // Notes storage
+    notesIdCounter: 0,    // Autoincrement notes index
   },
   getters: {
     notes: state => {
-      return state.notes; 
+      return state.notes;
     },
     noteById: state => id => {
-      return state.notes.find(note => note.id == id);
-    }
+      const n = state.notes.find(note => note.id == id);
+      return n;
+    },
   },
   mutations: {
+    // Initial mutation that load vuex state from localStorage if it exist
     LOAD_STORE: (state) => {
       if (localStorage.getItem("todo-app-state")) {
         try {
@@ -24,27 +26,26 @@ export default createStore({
         }
       }
     },
-    ADD_NOTE: (state, note) => {
-      note.id = state.notesIdCounter++;
-      state.notes.push(note);
-    },
-    EDIT_NOTE: (state, note) => {
+    // Resolves if it is a new or not new note and handle it accordingly
+    PUSH_NOTE: (state, note) => {
       const ix = state.notes.findIndex((n) => n.id == note.id);
       if (ix != -1) {
         state.notes[ix] = note;
       }
+      else {
+        note.id = state.notesIdCounter++;
+        state.notes.push(note);
+      }
     },
+    // Removes note from state.notes if it exists
     REMOVE_NOTE: (state, id) => {
       if (id >= 0)
         state.notes = state.notes.filter(n => n.id !== id);
     },
   },
   actions: {
-    addNote: async (context, note) => {
-      context.commit("ADD_NOTE", note);
-    },
-    editNote: async (context, note) => {
-      context.commit("EDIT_NOTE", note);
+    pushNote: async (context, note) => {
+      context.commit("PUSH_NOTE", note);
     },
     removeNote: async (context, id) => {
       context.commit("REMOVE_NOTE", id);

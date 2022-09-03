@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <div class="edit">
     <ControlsBar>
@@ -5,62 +6,16 @@
         Edititng note: {{ $route.params.id }}
       </template>
       <template #right>
-        <button
-          class="is-success"
-          @click="
-            runDialog(
-              {
-                title: ' Save changes?',
-                subtitle: 'Are you sure you want to save changes?',
-                confirmBtnClass: 'is-success',
-              },
-              saveChanges
-            )
-          "
-        >
+        <button class="is-success" @click="runDialog(modal.types.save)">
           Save changes
         </button>
-        <button
-          class="is-warning"
-          @click="
-            runDialog(
-              {
-                title: 'Revert changes?',
-                subtitle:
-                  'Are you sure you want to revert all changes? It will restore the initial state.',
-              },
-              revertChanges
-            )
-          "
-        >
+        <button class="is-warning" @click="runDialog(modal.types.revert)">
           Revert changes
         </button>
-        <button
-          class="is-warning"
-          @click="
-            runDialog(
-              {
-                title: 'Exit?',
-                subtitle: 'Warning! Unsaved changes will not be saved!',
-              },
-              exit
-            )
-          "
-        >
+        <button class="is-warning" @click="runDialog(modal.types.exit)">
           exit
         </button>
-        <button
-          class="is-danger"
-          @click="
-            runDialog(
-              {
-                title: 'Delete note?',
-                subtitle: 'Are you sure you want to delete the note?',
-              },
-              deleteNote
-            )
-          "
-        >
+        <button class="is-danger" @click="runDialog(modal.types.delete)">
           Delete note
         </button>
       </template>
@@ -68,26 +23,17 @@
     <ControlsBar>
       <template #left>
         <div class="buttons">
-          <button
-            class="is-regular"
-            @click="undoLastChange"
-          >
+          <button class="is-regular" @click="undoLastChange">
             Undo
           </button>
-          <button
-            class="is-regular"
-            @click="redoLastChange"
-          >
+          <button class="is-regular" @click="redoLastChange">
             Redo
           </button>
         </div>
       </template>
       <template #right>
         <div class="buttons">
-          <button
-            class="is-info"
-            @click="addTodoEntry"
-          >
+          <button class="is-info" @click="addTodoEntry">
             Add todo
           </button>
         </div>
@@ -95,32 +41,29 @@
     </ControlsBar>
     <div class="note-title">
       <label><strong>Note title: </strong></label>
-      <input
-        type="text"
-        v-model="newNote.title"
-      >
+      <input type="text" v-model="note.title">
     </div>
     <section class="todo-list">
       <TodoItem
         class="todo-item"
-        v-for="(todo, ix) in newNote.todo.length"
+        v-for="(todo, ix) in note.todo.length"
         :key="ix"
-        :task="newNote.todo[ix].task"
-        :done="newNote.todo[ix].done"
-        @update:task="(newVal) => (newNote.todo[ix].task = newVal)"
-        @update:done="(newVal) => (newNote.todo[ix].done = newVal)"
+        :task="note.todo[ix].task"
+        :done="note.todo[ix].done"
+        @update:task="(newVal) => (note.todo[ix].task = newVal)"
+        @update:done="(newVal) => (note.todo[ix].done = newVal)"
         @deleteTodo="deleteTodoEntry(ix)"
       />
-      <h1 v-show="newNote.todo.length < 1">
+      <h1 v-show="note.todo.length < 1">
         Todo list is empty. Add some tasks
       </h1>
     </section>
     <ModalDialog
-      :title="modal.title"
-      :subtitle="modal.subtitle"
-      :confirm-text="modal.confirmText"
-      :confirm-btn-class="modal.confirmBtnClass"
-      :cancel-text="modal.cancelText"
+      :title="modal.selected.title"
+      :subtitle="modal.selected.subtitle"
+      :confirm-text="modal.selected.confirmText"
+      :confirm-btn-class="modal.selected.confirmBtnClass"
+      :cancel-text="modal.selected.cancelText"
       @cancel="onDialogCancel"
       @confirm="onDialogConfirm"
       v-show="modal.show"
@@ -138,82 +81,95 @@ export default {
   components: { ControlsBar, TodoItem, ModalDialog },
   data() {
     return {
-      isNewNote: false,
-      newNote: {},
+      note: {},
       backupNote: {},
-      noteChangeHistory: [],
       modal: {
         show: false,
-        title: "",
-        subtitle: "",
-        callBack: () => {},
+        selected: {}, // anchor for modal.type
+        types: {
+          exit: {
+            title: " Do you want to exit?",
+            subtitle: "Unsaved changes won't be saved.",
+            confirmBtnClass: "is-warning",
+            callBack: this.exit,
+          },
+          save: {
+            title: " Save changes?",
+            subtitle: "Are you sure you want to save changes?",
+            confirmBtnClass: "is-success",
+            callBack: this.saveChanges,
+          },
+          revert: {
+            title: "Revert changes?",
+            subtitle:
+              "Are you sure you want to revert all changes? It will restore the initial note state.",
+            confirmBtnClass: "is-warning",
+            callBack: this.revertChanges,
+          },
+          delete: {
+            title: "Delete note?",
+            subtitle: "Carefull! this action can not be reverted!",
+            confirmBtnClass: "is-danger",
+            callBack: this.deleteNote,
+          },
+        },
       },
     };
   },
   methods: {
-    runDialog(params, cb) {
-      this.modal = {
-        show: true,
-        title: params.title,
-        subtitle: params.subtitle,
-        confirmBtnClass: params.confirmBtnClass,
-        callBack: cb,
-      };
-    },
-    cleanModal() {
-      this.modal = {
-        show: false,
-        title: "",
-        subtitle: "",
-        callBack: () => {},
-      };
+    runDialog(type) {
+      this.modal.selected = type;
+      this.modal.show = true;
     },
     onDialogConfirm() {
-      this.modal.callBack();
-      this.cleanModal();
+      this.modal.selected.callBack();
+      this.modal.show = false;
     },
     onDialogCancel() {
-      this.cleanModal();
+      this.modal.show = false;
+      this.modal.selected = {};
     },
     exit() {
       this.$router.push("/");
     },
     deleteNote() {
-      this.$store.dispatch("removeNote", this.newNote.id);
+      this.$store.dispatch("removeNote", this.note.id);
       this.$router.push("/");
     },
     saveChanges() {
-      if (this.$route.params.id == "new") {
-        this.$store.dispatch("addNote", this.newNote);
-        this.$router.push(`/edit/${this.newNote.id}`);
-      } else this.$store.dispatch("editNote", this.newNote);
+      this.$store.dispatch("pushNote", this.note);
+      if (this.$route.params.id == "new") 
+        this.$router.push(`/edit/${this.note.id}`);
     },
     revertChanges() {
-      this.newNote = JSON.parse(this.backupNote);
+      this.note = JSON.parse(this.backupNote);
+    },
+    addTodoEntry() {
+      this.note.todo.push({ task: "", done: false });
+    },
+    deleteTodoEntry(ix) {
+      this.note.todo.splice(ix, 1);
     },
     undoLastChange() {},
     redoLastChange() {},
-    addTodoEntry() {
-      this.newNote.todo.push({ task: "", done: false });
-    },
-    deleteTodoEntry(ix) {
-      this.newNote.todo.splice(ix, 1);
-    },
   },
   beforeCreate() {
+    // Check if user is trying to access invalid route before component created
+    // "/edit/new" route is used for creating new note
     const id = this.$route.params.id;
     if (id != "new")
-      if (this.$store.getters.noteById(id) == undefined) // "/edit/new" route is used for creating new note
-        this.$router.push("/"); // Redirect to "/" if there is no a note with that id
+      if (this.$store.getters.noteById(id) == undefined)
+        this.$router.push("/"); // Redirect to "/" if there is no such note with that id
   },
   beforeMount() {
+    // Create not reactive copy of the note that appropriate to the route
+    // It can be manipulated without impact on the main storage
+    // Changes may be written if user push save button
     const id = this.$route.params.id;
-    if (id == "new")
-      this.newNote = { title: "New note", todo: [] };
+    if (id == "new") this.note = { title: "New note", todo: [] };
     if (this.$store.getters.noteById(id) != undefined)
-      this.newNote = this.$store.getters.noteById(id);
-
-    this.backupNote = JSON.stringify(this.newNote);
+        this.note = JSON.parse(JSON.stringify(this.$store.getters.noteById(id)));
+    this.backupNote = JSON.stringify(this.note);
   },
 };
 </script>
