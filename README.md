@@ -1,4 +1,4 @@
-# todo-ta
+# Todo notes app
 
 ## Дерево проекта
 
@@ -24,11 +24,6 @@
     └── HomeView.vue      - View маршрута /. Страница списка заметок
 ```
 
-## Требования по ТЗ
-
-Не реализованы функции
-[ ] отмены изменения и повторения отмененного изменения
-
 ## Project setup
 ```
 yarn install
@@ -47,6 +42,10 @@ yarn build
 ### Lints and fixes files
 ```
 yarn lint
+```
+### Deploy on gh-pages
+```
+yarn deploy
 ```
 
 ### Customize configuration

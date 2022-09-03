@@ -23,10 +23,10 @@
     <ControlsBar>
       <template #left>
         <div class="buttons">
-          <button class="is-regular" @click="undoLastChange">
+          <button class="is-regular" @click="undoLastChange" :disabled="!this.canUndo">
             Undo
           </button>
-          <button class="is-regular" @click="redoLastChange">
+          <button class="is-regular" @click="redoLastChange" :disabled="!this.canRedo">
             Redo
           </button>
         </div>
@@ -81,8 +81,6 @@ export default {
   components: { ControlsBar, TodoItem, ModalDialog },
   data() {
     return {
-      note: {},
-      backupNote: {},
       modal: {
         show: false,
         type: {}, // anchor for modal.types
@@ -114,6 +112,12 @@ export default {
           },
         },
       },
+      note: {},           // Reactive note object
+      backupNote: {},     // Initial note state. It is initialized before EditView comp mounts
+      pending: {},        // The note state pending to be written in done array
+      done: [],           // Undo array
+      undone: [],         // Redo array
+      newMutation: false, // Flag that saves watching.note from undo/redo operatitons
     };
   },
   methods: {
@@ -145,6 +149,8 @@ export default {
     },
     revertChanges() {
       this.note = JSON.parse(this.backupNote);
+      this.undone = [];
+      this.done = [];
     },
     addTodoEntry() {
       this.note.todo.push({ task: "", done: false });
@@ -152,26 +158,64 @@ export default {
     deleteTodoEntry(ix) {
       this.note.todo.splice(ix, 1);
     },
-    undoLastChange() {},
-    redoLastChange() {},
+    undoLastChange() {
+      if (this.canUndo) {
+        this.undone.push(JSON.stringify(this.note));
+        this.newMutation = false;
+        this.note = JSON.parse(this.done.pop());
+      }
+    },
+    redoLastChange() {
+      if (this.canRedo) {
+        this.done.push(JSON.stringify(this.note));
+        this.newMutation = false;
+        this.note = JSON.parse(this.undone.pop());
+      }
+    },
+  },
+  computed: {
+    canUndo() {
+      return this.done.length > 0;
+    },
+    canRedo() {
+      return this.undone.length > 0;
+    },
+  },
+  watch: {
+    // Watching on note.todo changes.
+    "note.todo": {
+      deep: true,
+      handler() {
+        if (this.newMutation) {                      // If it's not an undo or redo change but users change
+          this.undone = [];                         // Clear undo array
+          this.done.push(this.pending);             // Save prev note state
+          this.pending = JSON.stringify(this.note); // The next note's history state to save
+        }
+        else {
+          console.log("Working in history tree");
+          this.pending = JSON.stringify(this.note); // The next note's history state to save
+          this.newMutation = true;                  // turn off the undo/redo flag
+        }
+      },
+    },
   },
   beforeCreate() {
     // Check if user is trying to access invalid route before component created
     // "/edit/new" route is used for creating new note
     const id = this.$route.params.id;
     if (id != "new")
-      if (this.$store.getters.noteById(id) == undefined)
-        this.$router.push("/"); // Redirect to "/" if there is no such note with that id
+      if (this.$store.getters.noteById(id) == undefined) this.$router.push("/"); // Redirect to "/" if there is no such note with that id
   },
   beforeMount() {
     // Create not reactive copy of the note that appropriate to the route
     // It can be manipulated without impact on the main storage
     // Changes may be written if user push save button
     const id = this.$route.params.id;
-    if (id == "new") this.note = JSON.parse(JSON.stringify({ title: "New note", todo: [] }));
+    if (id == "new")
+      this.note = JSON.parse(JSON.stringify({ title: "New note", todo: [] }));
     if (this.$store.getters.noteById(id) != undefined)
-        this.note = JSON.parse(JSON.stringify(this.$store.getters.noteById(id)));
-    this.backupNote = JSON.stringify(this.note);
+      this.note = JSON.parse(JSON.stringify(this.$store.getters.noteById(id)));
+    this.backupNote = this.pending = JSON.stringify(this.note);
   },
 };
 </script>
