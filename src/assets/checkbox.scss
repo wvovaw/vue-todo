@@ -1,3 +1,5 @@
+@import "bulma/sass/utilities/derived-variables.sass";
+
 input[type=checkbox] {
   display: none;
 
@@ -11,11 +13,10 @@ input[type=checkbox] {
       border: 0.1em solid #000;
       border-radius: 0.2em;
       display: inline-block;
-      width: 1em;
-      height: 1em;
+      width: 1.3em;
+      height: 1.3em;
       padding-left: 0.2em;
-      padding-bottom: 0.3em;
-      margin-right: 0.2em;
+      margin-right: 0.5em;
       vertical-align: bottom;
       color: transparent;
       transition: .2s;
@@ -32,11 +33,11 @@ input[type=checkbox] {
   &:disabled,
   &[aria-disabled="true"] {
     &+label:before {
-      border-color: $gray;
+      border-color: $grey;
     }
 
     &:checked+label:before {
-      filter: brightness(150%);
+      filter: brightness(130%);
     }
   }
 }

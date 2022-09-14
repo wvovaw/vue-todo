@@ -23,7 +23,7 @@
 
 <script>
 import NoteEntity from "@/components/NoteEntity.vue";
-import ModalDialog from "@/components/ModalDialog.vue";
+import ModalDialog from "@/components/core/ModalDialog.vue";
 
 export default {
   name: "NotesList",
@@ -32,12 +32,15 @@ export default {
   data() {
     return {
       showModal: false,
-      noteIdToDelete: 0
+      noteIdToDelete: 0,
     };
   },
   computed: {
     notes() {
-      return this.$store.getters.notes;
+      const page = this.$store.getters.pageById(this.$route.params.id);
+      if (page != undefined )
+        return page.notes;
+      else return [];
     },
   },
   methods: {
@@ -46,11 +49,14 @@ export default {
       this.showModal = true;
     },
     deleteNote() {
-      this.$store.dispatch("removeNote", this.noteIdToDelete);
+      this.$store.dispatch("removeNote", {
+        pageId: this.$route.params.id,
+        noteId: this.noteIdToDelete,
+      });
       this.showModal = false;
       this.noteIdtoDelete = null;
-    }
-  }
+    },
+  },
 };
 </script>
 

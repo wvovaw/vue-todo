@@ -1,0 +1,67 @@
+{
+  "pages": [
+    {
+      "id": 0,
+      "title": "Page one",
+      "notes": [
+        {
+          "title": "Job hunt",
+          "id": 0,
+          "todo": [
+            {
+              "task": "Get TA done",
+              "done": true
+            },
+            {
+              "task": "Get invited to interview",
+              "done": false
+            },
+            {
+              "task": "Get hired",
+              "done": false
+            }
+          ]
+        },
+        {
+          "title": "TODO app Beautify",
+          "id": 2,
+          "todo": [
+            {
+              "task": "Adaptive flex grid layout",
+              "done": false
+            },
+            {
+              "task": "Make buttons more like buttons",
+              "done": false
+            }
+          ]
+        }
+      ],
+      "notesIdCounter": 3
+    },
+    {
+      "id": 5,
+      "title": "Page five",
+      "notes": [
+        {
+          "title": "Kind note",
+          "id": 4,
+          "todo": [
+            {
+              "task": "Just exists",
+              "done": true
+            }
+          ]
+        }
+      ],
+      "notesIdCounter": 6
+    },
+    {
+      "id": 6,
+      "title": "Page six",
+      "notes": [],
+      "notesIdCounter": 228
+    }
+  ],
+  "pagesIdCounter": 7
+}

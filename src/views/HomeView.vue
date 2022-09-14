@@ -1,35 +1,84 @@
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <div class="home">
-    <ControlsBar>
-      <template #left>
-        Notes
-      </template>
-      <template #right>
+    <nav class="panel">
+      <p class="panel-heading">
+        Notebook
+      </p>
+      <div class="panel-block">
+        <p class="control has-icons-left">
+          <input class="input" type="text" placeholder="Search">
+          <span class="icon is-left">
+            <i class="fas fa-search" aria-hidden="true" />
+          </span>
+        </p>
+      </div>
+      <router-link
+        class="panel-block is-justify-content-space-between"
+        v-for="page of $store.getters.pages"
+        :key="page.id"
+        :to="'/page/' + page.id"
+      >
+        <div>
+          <span class="panel-icon">
+            <i class="fas fa-book" aria-hidden="true" />
+          </span>
+          {{ page.title }}
+        </div>
+        <i
+          class="button is-danger is-outlined is-small fas fa-trash"
+          aria-hidden="true"
+          @click.prevent="removePage($event, page.id)"
+        />
+      </router-link>
+      <div class="panel-block">
+        <p class="control has-icons-left">
+          <input
+            class="input"
+            type="text"
+            placeholder="New page"
+            v-model="newPage.title"
+          >
+          <span class="icon is-left">
+            <i class="fas fa-book" aria-hidden="true" />
+          </span>
+        </p>
         <button
-          class="is-success"
-          @click="createNewNote"
+          class="button is-link is-outlined is-aligned-flex-end"
+          :disabled="newPage.title == ''"
+          @click="addPage"
         >
-          Create new
+          Add new page
         </button>
-      </template>
-    </ControlsBar>
-    <NotesList />
+      </div>
+    </nav>
   </div>
 </template>
 
 <script>
-import ControlsBar from "@/components/ControlsBar.vue";
-import NotesList from "@/components/NotesList.vue";
-
 export default {
   name: "HomeView",
-  components: {
-    ControlsBar,
-    NotesList,
+  components: {},
+  data() {
+    return {
+      newPage: {
+        title: "",
+        notes: [],
+        notesIdCounter: 0,
+      },
+    };
   },
   methods: {
-    createNewNote() {
-      this.$router.push("/edit/new");
+    addPage() {
+      this.$store.dispatch(
+        "pushPage",
+        JSON.parse(JSON.stringify(this.newPage))
+      );
+      this.newPage.title = "";
+    },
+    // TODO: Modal confirmation
+    removePage(e, id) {
+      this.$store.dispatch("removePage", id);
     },
   },
 };

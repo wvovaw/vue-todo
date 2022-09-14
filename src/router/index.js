@@ -4,13 +4,18 @@ import HomeView from '../views/HomeView.vue';
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'homeView',
     component: HomeView
   },
   {
-    path: '/edit/:id',
-    name: 'edit',
-    component: () => import(/* webpackChunkName: "edit" */ '../views/EditView.vue'),
+    path: '/page/:id',
+    name: 'pageView',
+    component: () => import(/* webpackChunkName: "edit" */ '../views/PageView.vue'),
+  },
+  {
+    path: '/page/:pageId/note/:noteId',
+    name: 'editNoteView',
+    component: () => import(/* webpackChunkName: "edit" */ '../views/EditNoteView.vue'),
   },
   {
     // If user will try to go to the route that not exist

@@ -1,5 +1,6 @@
 <template>
-  <nav>
+  <nav class="navbar">
+    <slot name="brand" />
     <div class="nav-item">
       <h3 class="title">
         <slot name="left" />
@@ -22,7 +23,6 @@ export default {
 nav {
   border-bottom: 2px solid black;
   padding: 0.5rem;
-  margin-bottom: 1rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -36,9 +36,6 @@ nav {
   // Makes possible to imply scoped scss rulles on in-slot elements
   :deep(.nav-item) {
     align-self: center;
-    & * {
-      margin-bottom: 5px;
-    }
   }
 }
 </style>

@@ -1,17 +1,15 @@
 <template>
   <section class="note">
     <div class="note-header">
-      <router-link :to="`/edit/${note.id}`">
-        <h3 class="note-title">
+      <router-link :to="`/page/${this.$route.params.id}/note/${note.id}`">
+        <h5 class="title is-5 note-title">
           {{ note.title }}
-        </h3>
+        </h5>
       </router-link>
-      <a
-        class="delbtn is-danger"
+      <button
+        class="delete is-medium"
         @click="$emit('deleteNote', note.id)"
-      >
-        &times;
-      </a>
+      />
     </div>
     <div class="todo-list">
       <div
@@ -63,20 +61,6 @@ export default {
     .note-title {
       margin: 0 0 1rem;
       max-width: 20rem;
-    }
-
-    .delbtn {
-      display: block;
-      width: 15px;
-      height: 15px;
-      font-size: 0.85em;
-      border-radius: 100%;
-
-      &:hover {
-        text-decoration: none;
-        filter: brightness(85%);
-        cursor: pointer;
-      }
     }
   }
 

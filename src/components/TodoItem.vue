@@ -1,5 +1,5 @@
 <template>
-  <div class="item">
+  <div class="item field has-addons is-justify-content-center">
     <input
       type="checkbox"
       :checked="done"
@@ -7,15 +7,18 @@
       @click="$emit('update:done', !done)"
     />
     <input
+      class="input has-addons"
       type="text"
       :value="task"
       @input="$emit('update:task', $event.target.value)"
     >
     <button
-      class="is-danger"
+      class="button is-danger"
       @click="$emit('deleteTodo')"
     >
-      Del
+      <span class="icon">
+        <i class="fas fa-trash" />
+      </span>
     </button>
   </div>
 </template>
@@ -38,7 +41,7 @@ export default {
 <style lang="scss" scoped>
 input {
   &[type="text"] {
-    width: 50%;
+    width: 80%;
   }
   &[type="checkbox"] {
     text-align: center;
@@ -46,10 +49,13 @@ input {
       cursor: pointer;
       display: inline-block;
       vertical-align: middle;
+      margin-top: 0;
+      padding-top: 0;
+      margin-left: 2em;
 
       &:before {
-        width: 2.8em;
-        height: 2.8em;
+        width: 2.4em;
+        height: 2.4em;
         margin: 0;
         padding: 0;
       }
