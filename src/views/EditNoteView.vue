@@ -180,8 +180,8 @@ export default {
         note: JSON.parse(JSON.stringify(this.note)),
       });
       if (this.$route.params.noteId == "new") {
-        const pageId = this.$route.params.pageId;
         const noteId = this.$store.getters.lastNote(pageId).id;
+        this.note.id = noteId;
         this.$router.push(`/page/${pageId}/note/${noteId}`);
       }
     },
