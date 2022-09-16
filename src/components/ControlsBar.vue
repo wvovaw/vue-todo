@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar">
-    <slot name="brand" />
+    <div class="title">
+      <slot name="brand" />
+    </div>
     <div class="nav-item">
       <h3 class="title">
         <slot name="left" />

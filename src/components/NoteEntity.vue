@@ -18,12 +18,13 @@
         :key="ix"
         :todo="todo"
       >
-        <input
-          type="checkbox"
-          :checked="todo.done"
-          aria-disabled="true"
-        >
         <label>
+          <input
+            type="checkbox"
+            :checked="todo.done"
+            disabled
+          >
+          <span />
           {{ todo.task }}
         </label>
       </div>
@@ -73,10 +74,18 @@ export default {
       text-overflow: ellipsis;
       margin: 1rem 0;
       max-width: 20rem;
-      label {
-        border-bottom: 1px solid black;
-      }
+        border-bottom: 1px solid;
     }
   }
 }
+input {
+  &[type="checkbox"] {
+    & + span:before {
+      font-size: 1.5rem;
+    }
+    &:checked + span:before {
+      font-size: 1.5rem;
+    }
+  }
+  }
 </style>

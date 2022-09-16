@@ -1,19 +1,21 @@
 <template>
-  <div class="item field has-addons is-justify-content-center">
+  <div class="item">
+    <label>
+      <input
+        type="checkbox"
+        :checked="done"
+        @click="$emit('update:done', !done)"
+      >
+      <span />
+    </label>
     <input
-      type="checkbox"
-      :checked="done"
-    ><label
-      @click="$emit('update:done', !done)"
-    />
-    <input
-      class="input has-addons"
+      class="input ml-3 mr-3"
       type="text"
       :value="task"
       @input="$emit('update:task', $event.target.value)"
     >
     <button
-      class="button is-danger"
+      class="button is-ghost"
       @click="$emit('deleteTodo')"
     >
       <span class="icon">
@@ -39,26 +41,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.button.is-ghost {
+  color: #da4343;
+  font-size: 1.2rem;
+  line-height: 1em;
+  :hover {
+    filter: brightness(85%);
+  }
+}
 input {
   &[type="text"] {
-    width: 80%;
+    border: 2px solid hsl(0deg, 0%, 29%);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    width: 70%;
   }
-  &[type="checkbox"] {
-    text-align: center;
-    & + label {
-      cursor: pointer;
-      display: inline-block;
-      vertical-align: middle;
-      margin-top: 0;
-      padding-top: 0;
-      margin-left: 2em;
 
-      &:before {
-        width: 2.4em;
-        height: 2.4em;
-        margin: 0;
-        padding: 0;
-      }
+  &[type="checkbox"] {
+    & + span:before {
+      font-size: 2.8rem;
+      line-height: 1em;
+    }
+    &:checked + span:before {
+      font-size: 2.8rem;
+      line-height: 1em;
     }
   }
 }

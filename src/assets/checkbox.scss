@@ -1,43 +1,41 @@
 @import "bulma/sass/utilities/derived-variables.sass";
 
-input[type=checkbox] {
-  display: none;
+input {
+  &[type="radio"],
+  &[type="checkbox"] {
+    display:none;
+    & + span:before {
+      font-family: 'FontAwesome';
+      padding-right: 3px;
+      font-size: 20px;
+    }
+    // &:disabled,
+    // &[aria-disabled="true"] {
+    //   & + span:before {
+    //     border-color: $grey;
+    //   }
+    //   &:checked + span:before {
+    //     filter: brightness(130%);
+    //   }
+    // }
+  }
 
-  &+label {
-    display: block;
-    margin: 0.2em;
-    padding: 0.2em;
-
-    &:before {
-      content: "\2714";
-      border: 0.1em solid #000;
-      border-radius: 0.2em;
-      display: inline-block;
-      width: 1.3em;
-      height: 1.3em;
-      padding-left: 0.2em;
-      margin-right: 0.5em;
-      vertical-align: bottom;
-      color: transparent;
-      transition: .2s;
+  &[type="radio"] {
+    & + span:before {
+      content: "\f10c"; /* circle-blank */
+    }
+    &:checked + span:before {
+      content: "\f111"; /* circle */
     }
   }
 
+  &[type="checkbox"] {
 
-  &:checked+label::before {
-    background-color: $info;
-    border-color: $info;
-    color: #fff;
-  }
-
-  &:disabled,
-  &[aria-disabled="true"] {
-    &+label:before {
-      border-color: $grey;
+    & + span:before {
+      content: "\f096"; /* check-empty */
     }
-
-    &:checked+label:before {
-      filter: brightness(130%);
+    &:checked + span:before {
+      content: "\f046"; /* check */
     }
   }
 }
